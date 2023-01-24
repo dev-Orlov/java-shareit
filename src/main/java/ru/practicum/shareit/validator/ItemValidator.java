@@ -17,7 +17,10 @@ public class ItemValidator {
 
     public void validate(Item item) {
         userStorage.getUser(item.getOwnerId()); // в случае, если владелец не существует, метод выдаст ошибку
+        generateId(item);
+    }
 
+    public static void generateId(Item item) {
         if (item.getId() == null || item.getId() == 0) {
             item.setId(++genItemId);
         }
