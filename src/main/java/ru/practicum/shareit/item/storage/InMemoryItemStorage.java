@@ -16,7 +16,7 @@ import java.util.Objects;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class InMemoryItemStorage implements ItemStorage{
+public class InMemoryItemStorage implements ItemStorage {
 
     private final HashMap<Long, Item> items = new HashMap<>();
     private final ItemValidator itemValidator;
