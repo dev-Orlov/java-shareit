@@ -19,13 +19,11 @@ public class ItemService {
     private final ItemMapper itemMapper;
 
     public ItemDto create(ItemDto itemDto, Long ownerId) {
-        itemDto.setOwnerId(ownerId);
-        return itemMapper.toItemDto(itemStorage.create(itemMapper.toItem(itemDto)));
+        return itemMapper.toItemDto(itemStorage.create(itemMapper.toItem(itemDto, ownerId)));
     }
 
     public ItemDto update(ItemDto itemDto, Long itemId, Long ownerId) {
-        itemDto.setOwnerId(ownerId);
-        return itemMapper.toItemDto(itemStorage.update(itemMapper.toItem(itemDto), itemId, ownerId));
+        return itemMapper.toItemDto(itemStorage.update(itemMapper.toItem(itemDto, ownerId), itemId, ownerId));
     }
 
     public ItemDto getItem(Long itemId) {
