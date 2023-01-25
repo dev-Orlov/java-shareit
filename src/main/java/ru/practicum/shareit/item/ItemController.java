@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -16,28 +17,28 @@ public class ItemController {
     private static final String OWNER = "X-Sharer-User-Id";
 
     @PostMapping
-    public ItemDto create(@Valid @RequestBody ItemDto itemDto, @RequestHeader(OWNER) Long ownerId) {
-        return itemService.create(itemDto, ownerId);
+    public ResponseEntity<ItemDto> create(@Valid @RequestBody ItemDto itemDto, @RequestHeader(OWNER) Long ownerId) {
+        return ResponseEntity.ok().body(itemService.create(itemDto, ownerId));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestBody ItemDto itemDto, @PathVariable Long itemId,
+    public ResponseEntity<ItemDto> update(@RequestBody ItemDto itemDto, @PathVariable Long itemId,
                           @RequestHeader(OWNER) Long ownerId) {
-        return itemService.update(itemDto, itemId, ownerId);
+        return ResponseEntity.ok().body(itemService.update(itemDto, itemId, ownerId));
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable Long itemId) {
-        return itemService.getItem(itemId);
+    public ResponseEntity<ItemDto> getItem(@PathVariable Long itemId) {
+        return ResponseEntity.ok().body(itemService.getItem(itemId));
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByOwner(@RequestHeader(OWNER) Long ownerId) {
-        return itemService.getItemsByOwner(ownerId);
+    public ResponseEntity<List<ItemDto>> getItemsByOwner(@RequestHeader(OWNER) Long ownerId) {
+        return ResponseEntity.ok().body(itemService.getItemsByOwner(ownerId));
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItem(@RequestParam String text) {
-        return itemService.searchItem(text);
+    public ResponseEntity<List<ItemDto>> searchItem(@RequestParam String text) {
+        return ResponseEntity.ok().body(itemService.searchItem(text));
     }
 }

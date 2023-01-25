@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -15,28 +16,27 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public UserDto getUser(@PathVariable("id") Long userId) {
-        return userService.getUser(userId);
+    public ResponseEntity<UserDto> getUser(@PathVariable("id") Long userId) {
+        return ResponseEntity.ok().body(userService.getUser(userId));
     }
 
     @GetMapping
-    public List<UserDto> getAll() {
-        return userService.getAll();
+    public ResponseEntity<List<UserDto>> getAll() {
+        return ResponseEntity.ok().body(userService.getAll());
     }
 
     @PostMapping
-    public UserDto create(@Valid @RequestBody UserDto userDto) {
-        return userService.create(userDto);
+    public ResponseEntity<UserDto> create(@Valid @RequestBody UserDto userDto) {
+        return ResponseEntity.ok().body(userService.create(userDto));
     }
 
     @PatchMapping("/{id}")
-    public UserDto update(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto) {
-        return userService.update(userDto, userId);
+    public ResponseEntity<UserDto> update(@PathVariable("id") Long userId, @Valid @RequestBody UserDto userDto) {
+        return ResponseEntity.ok().body(userService.update(userDto, userId));
     }
 
     @DeleteMapping("/{id}")
-    public UserDto remove(@PathVariable("id") Long userId) {
-        return userService.remove(userId);
+    public ResponseEntity<UserDto> remove(@PathVariable("id") Long userId) {
+        return ResponseEntity.ok().body(userService.remove(userId));
     }
-
 }
