@@ -5,7 +5,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 @Component
-public class ItemMapper {
+public class ItemMapper { //использованы мапперы без Mapstruct
 
     public ItemDto toItemDto(Item item) {
         return new ItemDto(
