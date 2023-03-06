@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.userExeption.ConflictUserException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validator.UserValidator;
 
 import java.util.ArrayList;
