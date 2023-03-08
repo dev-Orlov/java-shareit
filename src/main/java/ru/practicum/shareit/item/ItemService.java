@@ -3,11 +3,13 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.exception.itemExeption.UnknownItemException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithBookingInfoDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.validator.ItemValidator;
+import ru.practicum.shareit.validator.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +24,12 @@ public class ItemService {
 
     private final ItemMapper itemMapper;
     private final ItemRepository itemRepository;
-    private final ItemValidator itemValidator;
+    private final Validator validator;
+    private final BookingRepository bookingRepository;
 
     public ItemDto create(ItemDto itemDto, Long ownerId) {
         Item item = itemMapper.toItem(itemDto, ownerId);
-        itemValidator.validate(item);
+        validator.checkUserExist(item);
 
         log.debug("Создан объект вещи: {}", item);
         return itemMapper.toItemDto(itemRepository.save(item));
@@ -69,9 +72,9 @@ public class ItemService {
         return itemMapper.toItemDto(itemRepository.findById(itemId).get());
     }
 
-    public List<ItemDto> getItemsByOwner(Long ownerId) {
+    public List<ItemWithBookingInfoDto> getItemsByOwner(Long ownerId) {
         return itemRepository.findByOwnerId(ownerId).stream()
-                .map(itemMapper::toItemDto)
+                .map(itemMapper::toItemWithBookingInfoDto)
                 .collect(toList());
     }
 

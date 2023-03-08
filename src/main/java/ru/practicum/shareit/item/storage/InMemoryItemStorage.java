@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.itemExeption.UnknownItemException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.validator.ItemValidator;
+import ru.practicum.shareit.validator.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,11 +19,11 @@ import java.util.Objects;
 public class InMemoryItemStorage implements ItemStorage {
 
     private final HashMap<Long, Item> items = new HashMap<>();
-    private final ItemValidator itemValidator;
+    private final Validator validator;
 
     @Override
     public Item create(Item item) {
-        itemValidator.validate(item);
+        validator.checkUserExist(item);
 
         items.put(item.getId(), item);
         log.debug("Создан объект вещи: {}", item);

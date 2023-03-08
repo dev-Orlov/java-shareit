@@ -8,7 +8,7 @@ import ru.practicum.shareit.exception.userExeption.ConflictUserException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.validator.UserValidator;
+import ru.practicum.shareit.validator.Validator;
 
 import java.util.List;
 
@@ -21,6 +21,7 @@ public class UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final Validator validator;
 
     public UserDto getUser(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
@@ -39,7 +40,7 @@ public class UserService {
 
     public UserDto create(UserDto userDto) {
         User user = userMapper.toUser(userDto);
-        UserValidator.validate(user);
+        validator.userValidate(user);
 
         try {
             return userMapper.toUserDto(userRepository.save(user));
@@ -57,7 +58,7 @@ public class UserService {
         User user = userRepository.findById(userId).get();
 
         if (userDto.getName() != null) {
-            UserValidator.loginValidate(userMapper.toUser(userDto));
+            validator.loginValidate(userMapper.toUser(userDto));
         }
 
         if (userDto.getName() != null) {

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemWithBookingInfoDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -33,7 +34,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemDto>> getItemsByOwner(@RequestHeader(OWNER) Long ownerId) {
+    public ResponseEntity<List<ItemWithBookingInfoDto>> getItemsByOwner(@RequestHeader(OWNER) Long ownerId) {
         return ResponseEntity.ok().body(itemService.getItemsByOwner(ownerId));
     }
 
