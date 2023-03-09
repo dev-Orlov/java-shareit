@@ -6,6 +6,7 @@ import ru.practicum.shareit.booking.dto.ShortBookingDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,5 +24,5 @@ public class ItemWithBookingInfoDto {
     private Long requestId;
     private ShortBookingDto lastBooking;
     private ShortBookingDto nextBooking;
-    //private List<CommentDto> comments;
+    private List<CommentDto> comments;
 }

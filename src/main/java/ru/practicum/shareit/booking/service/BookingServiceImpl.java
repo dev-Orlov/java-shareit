@@ -176,16 +176,4 @@ public class BookingServiceImpl implements BookingService {
                 .map(bookingMapper::toBookingDto)
                 .collect(Collectors.toList());
     }
-
-    @Override
-    public BookingDto getLastBooking(Long itemId) {
-        return bookingMapper.toBookingDto(bookingRepository.findFirstByItem_IdAndEndBeforeOrderByEndDesc(itemId,
-                LocalDateTime.now()));
-    }
-
-    @Override
-    public BookingDto getNextBooking(Long itemId) {
-        return bookingMapper.toBookingDto(bookingRepository.findFirstByItem_IdAndStartAfterOrderByStartAsc(itemId,
-                LocalDateTime.now()));
-    }
 }

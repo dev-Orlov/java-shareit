@@ -43,8 +43,8 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public ResponseEntity<List<BookingDto>> getOwnerBookings(@RequestParam(name = "state", defaultValue = "ALL") String state,
-                                             @RequestHeader(BOOKER) Long userId) {
+    public ResponseEntity<List<BookingDto>> getOwnerBookings(@RequestParam(name = "state",
+            defaultValue = "ALL") String state, @RequestHeader(BOOKER) Long userId) {
         return ResponseEntity.ok().body(bookingService.getOwnerBookings(state, userId));
     }
 }
