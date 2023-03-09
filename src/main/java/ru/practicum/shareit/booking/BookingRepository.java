@@ -37,7 +37,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Booking getFirstByItemIdAndEndBeforeOrderByEndDesc(Long itemId, LocalDateTime end);
 
     Booking getTopByItemIdAndStartAfterOrderByStartAsc(Long itemId, LocalDateTime start);
-    
+
     @Query("SELECT b FROM Booking b " +
             "WHERE b.booker.id = :id AND b.end < :currentTime AND upper(b.status) = UPPER('APPROVED')" +
             "ORDER BY b.start DESC")
