@@ -6,10 +6,10 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreatedBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.ItemService;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.service.UserService;
 
 @Component
 @RequiredArgsConstructor
@@ -37,19 +37,10 @@ public class BookingMapper {
                 -1L,  // присваиваем временный id
                 createdBookingDto.getStart(),
                 createdBookingDto.getEnd(),
-                itemMapper.toItem(itemService.getItem(createdBookingDto.getItemId()), createdBookingDto.getItemId()),
+                itemMapper.toItemFromItemWithBookingInfo(itemService.getItem(createdBookingDto.getItemId(), null),
+                        createdBookingDto.getItemId()),
                 userMapper.toUser(userService.getUser(bookerId)),
                 Status.WAITING
-        );
-    }
-
-    public CreatedBookingDto toCreatedBookingDto(Booking booking, Long bookerId) {
-        return new CreatedBookingDto(
-                booking.getStart(),
-                booking.getEnd(),
-                booking.getStatus(),
-                booking.getBooker().getId(),
-                booking.getItem().getId()
         );
     }
 }

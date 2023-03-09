@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.userExeption.ConflictUserException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.validator.Validator;
@@ -17,12 +19,13 @@ import static java.util.stream.Collectors.toList;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
     private final UserRepository userRepository;
     private final Validator validator;
 
+    @Override
     public UserDto getUser(Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
             log.error("пользователя с id={} не существует", userId);
@@ -32,12 +35,14 @@ public class UserService {
         return userMapper.toUserDto(userRepository.findById(userId).get());
     }
 
+    @Override
     public List<UserDto> getAll() {
         return userRepository.findAll().stream()
                 .map(userMapper::toUserDto)
                 .collect(toList());
     }
 
+    @Override
     public UserDto create(UserDto userDto) {
         User user = userMapper.toUser(userDto);
         validator.userValidate(user);
@@ -49,6 +54,7 @@ public class UserService {
         }
     }
 
+    @Override
     public UserDto update(UserDto userDto, Long userId) {
         if (userRepository.findById(userId).isEmpty()) {
             log.error("пользователя с id={} не существует", userId);
@@ -73,6 +79,7 @@ public class UserService {
         return userMapper.toUserDto(userRepository.save(user));
     }
 
+    @Override
     public UserDto remove(Long userId) {
         userRepository.deleteById(userId);
         if (userRepository.findById(userId).isEmpty()) {

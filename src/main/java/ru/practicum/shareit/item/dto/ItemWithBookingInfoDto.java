@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.ShortBookingDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,7 +21,7 @@ public class ItemWithBookingInfoDto {
     private Boolean available;
     private Long ownerId;
     private Long requestId;
-    private BookingDto lastBooking;
-    private BookingDto nextBooking;
+    private ShortBookingDto lastBooking;
+    private ShortBookingDto nextBooking;
     //private List<CommentDto> comments;
 }

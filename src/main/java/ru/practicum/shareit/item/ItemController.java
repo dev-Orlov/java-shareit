@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingInfoDto;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final ItemService itemService;
+    private final ItemServiceImpl itemService;
     private static final String OWNER = "X-Sharer-User-Id";
 
     @PostMapping
@@ -29,8 +30,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemDto> getItem(@PathVariable Long itemId) {
-        return ResponseEntity.ok().body(itemService.getItem(itemId));
+    public ResponseEntity<ItemWithBookingInfoDto> getItem(@PathVariable Long itemId,
+                                                          @RequestHeader(OWNER) Long userId) {
+        return ResponseEntity.ok().body(itemService.getItem(itemId, userId));
     }
 
     @GetMapping

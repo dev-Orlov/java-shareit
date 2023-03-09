@@ -1,9 +1,11 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.BookingMapper;
+import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreatedBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -19,13 +21,13 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class BookingService {
+public class BookingServiceImpl implements BookingService {
 
     private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
     private final Validator validator;
 
-
+    @Override
     public BookingDto create(CreatedBookingDto createdBookingDto, Long userId) {
         validator.checkUserExistById(userId);
         validator.checkItemExistById(createdBookingDto.getItemId());
@@ -42,7 +44,7 @@ public class BookingService {
         Booking booking = bookingMapper.toBooking(createdBookingDto, userId);
         validator.checkBookingTime(createdBookingDto);
 
-        if (createdBookingDto.getBookerId().equals(userId)) {
+        if (booking.getItem().getOwnerId().equals(userId)) {
             log.error("нельзя забронировать собственную вещь");
             throw new UnknownBookingException("попытка забронировать свою вещь");
         }
@@ -51,6 +53,7 @@ public class BookingService {
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
+    @Override
     public BookingDto update(Long bookingId, Long bookerId, Boolean approved) {
         validator.checkUserExistById(bookerId);
 
@@ -82,6 +85,7 @@ public class BookingService {
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
+    @Override
     public BookingDto getBooking(Long bookingId, Long userId) {
         validator.checkUserExistById(userId);
 
@@ -100,6 +104,7 @@ public class BookingService {
         }
     }
 
+    @Override
     public List<BookingDto> getUserBookings(String state, Long userId) {
         validator.checkUserExistById(userId);
 
@@ -136,6 +141,7 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<BookingDto> getOwnerBookings(String state, Long userId) {
         validator.checkUserExistById(userId);
 
@@ -171,11 +177,13 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public BookingDto getLastBooking(Long itemId) {
         return bookingMapper.toBookingDto(bookingRepository.findFirstByItem_IdAndEndBeforeOrderByEndDesc(itemId,
                 LocalDateTime.now()));
     }
 
+    @Override
     public BookingDto getNextBooking(Long itemId) {
         return bookingMapper.toBookingDto(bookingRepository.findFirstByItem_IdAndStartAfterOrderByStartAsc(itemId,
                 LocalDateTime.now()));
