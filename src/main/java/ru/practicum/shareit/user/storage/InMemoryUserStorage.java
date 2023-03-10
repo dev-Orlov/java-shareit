@@ -1,11 +1,12 @@
 package ru.practicum.shareit.user.storage;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.userExeption.ConflictUserException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.validator.UserValidator;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.validator.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +14,11 @@ import java.util.List;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage {
 
     private final HashMap<Long, User> users = new HashMap<>();
+    private final Validator validator;
 
     @Override
     public List<User> getAll() {
@@ -34,7 +37,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User create(User user) {
         checkEmailExist(user.getEmail());
-        UserValidator.validate(user);
+        validator.userValidate(user);
 
         users.put(user.getId(), user);
         log.debug("Создан объект пользователя: {}", user);
@@ -44,7 +47,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User update(User user, Long userId) {
         if (user.getName() != null) {
-            UserValidator.loginValidate(user);
+            validator.loginValidate(user);
         }
 
         checkEmailExist(user.getEmail());
