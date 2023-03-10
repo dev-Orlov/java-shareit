@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.practicum.shareit.exception.bookingExeption.ConflictBookingException;
-import ru.practicum.shareit.exception.bookingExeption.IncorrectBooking;
+import ru.practicum.shareit.exception.bookingExeption.IncorrectBookingException;
 import ru.practicum.shareit.exception.bookingExeption.UnknownBookingException;
 import ru.practicum.shareit.exception.itemExeption.UnavailableItemException;
 import ru.practicum.shareit.exception.itemExeption.UnknownItemException;
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({UserValidationException.class, UnavailableItemException.class, IncorrectBooking.class})
+    @ExceptionHandler({UserValidationException.class, UnavailableItemException.class, IncorrectBookingException.class})
     public ResponseEntity<ErrorObject> catchResourceBadRequestException(RuntimeException e) {
         log.error(e.getMessage(), e);
         return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.BAD_REQUEST);

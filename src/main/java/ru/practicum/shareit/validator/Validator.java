@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.CreatedBookingDto;
-import ru.practicum.shareit.exception.bookingExeption.IncorrectBooking;
+import ru.practicum.shareit.exception.bookingExeption.IncorrectBookingException;
 import ru.practicum.shareit.exception.itemExeption.UnavailableItemException;
 import ru.practicum.shareit.exception.itemExeption.UnknownItemException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
@@ -71,7 +71,7 @@ public class Validator {
     public void checkBookingTime(CreatedBookingDto createdBookingDto) {
         if (createdBookingDto.getEnd().isBefore(createdBookingDto.getStart())) {
             log.error("Время окончания брони не может быть раньше начала бронирования");
-            throw new IncorrectBooking("дата старта брони должна быть раньше, чем дата окончания");
+            throw new IncorrectBookingException("дата старта брони должна быть раньше, чем дата окончания");
         }
     }
 }

@@ -10,7 +10,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreatedBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.exception.bookingExeption.IncorrectBooking;
+import ru.practicum.shareit.exception.bookingExeption.IncorrectBookingException;
 import ru.practicum.shareit.exception.bookingExeption.UnknownBookingException;
 import ru.practicum.shareit.validator.Validator;
 
@@ -37,7 +37,7 @@ public class BookingServiceImpl implements BookingService {
             if (booking.getItem().getId().equals(createdBookingDto.getItemId()) &&
                     booking.getBooker().getId().equals(createdBookingDto.getBookerId())) {
                 log.error("бронирование уже было создано");
-                throw new IncorrectBooking("попытка повторно создать бронирование");
+                throw new IncorrectBookingException("попытка повторно создать бронирование");
             }
         }
 
@@ -79,7 +79,7 @@ public class BookingServiceImpl implements BookingService {
                 booking.setStatus(Status.CANCELED);
             } else {
                 log.error("подтверждение запроса на бронирование уже было выполнено");
-                throw new IncorrectBooking("попытка повторно подтвердить бронирование");
+                throw new IncorrectBookingException("попытка повторно подтвердить бронирование");
             }
         }
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
@@ -133,7 +133,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
             default:
                 log.error("некорректное условие бронирования state={} ", state);
-                throw new IncorrectBooking("Unknown state: " + state);
+                throw new IncorrectBookingException("Unknown state: " + state);
         }
 
         return bookings.stream()
@@ -170,7 +170,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
             default:
                 log.error("некорректное условие бронирования state={} ", state);
-                throw new IncorrectBooking("Unknown state: " + state);
+                throw new IncorrectBookingException("Unknown state: " + state);
         }
         return bookings.stream()
                 .map(bookingMapper::toBookingDto)

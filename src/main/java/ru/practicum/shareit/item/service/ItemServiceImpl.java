@@ -91,12 +91,12 @@ public class ItemServiceImpl implements ItemService {
         }
         Item item = itemRepository.findById(itemId).get();
         Booking lastBooking = bookingRepository
-                .getFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), LocalDateTime.now());
+                .getFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), LocalDateTime.now()).orElse(null);
         if (lastBooking != null && !lastBooking.getStatus().equals(Status.APPROVED)) {
             lastBooking = null;
         }
         Booking nextBooking = bookingRepository
-                .getTopByItemIdAndStartAfterOrderByStartAsc(item.getId(), LocalDateTime.now());
+                .getTopByItemIdAndStartAfterOrderByStartAsc(item.getId(), LocalDateTime.now()).orElse(null);
         if (nextBooking != null && !nextBooking.getStatus().equals(Status.APPROVED)) {
             nextBooking = null;
         }
@@ -119,12 +119,13 @@ public class ItemServiceImpl implements ItemService {
                 .map(item -> {
                             Booking lastBooking = bookingRepository
                                     .getFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(),
-                                            LocalDateTime.now());
+                                            LocalDateTime.now()).orElse(null);
                             if (lastBooking != null && !lastBooking.getStatus().equals(Status.APPROVED)) {
                                 lastBooking = null;
                             }
                             Booking nextBooking = bookingRepository
-                                    .getTopByItemIdAndStartAfterOrderByStartAsc(item.getId(), LocalDateTime.now());
+                                    .getTopByItemIdAndStartAfterOrderByStartAsc(item.getId(),
+                                            LocalDateTime.now()).orElse(null);
                             if (nextBooking != null && !nextBooking.getStatus().equals(Status.APPROVED)) {
                                 nextBooking = null;
                             }
