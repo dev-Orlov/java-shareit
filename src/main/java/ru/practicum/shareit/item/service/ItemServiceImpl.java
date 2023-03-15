@@ -91,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
         }
         Item item = itemRepository.findById(itemId).get();
         Booking lastBooking = bookingRepository
-                .getFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(), LocalDateTime.now()).orElse(null);
+                .getTopByItemIdAndStartBeforeOrderByStartDesc(item.getId(), LocalDateTime.now()).orElse(null);
         if (lastBooking != null && !lastBooking.getStatus().equals(Status.APPROVED)) {
             lastBooking = null;
         }
@@ -118,7 +118,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findByOwnerId(ownerId).stream()
                 .map(item -> {
                             Booking lastBooking = bookingRepository
-                                    .getFirstByItemIdAndEndBeforeOrderByEndDesc(item.getId(),
+                                    .getTopByItemIdAndStartBeforeOrderByStartDesc(item.getId(),
                                             LocalDateTime.now()).orElse(null);
                             if (lastBooking != null && !lastBooking.getStatus().equals(Status.APPROVED)) {
                                 lastBooking = null;

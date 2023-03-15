@@ -69,8 +69,9 @@ public class Validator {
     }
 
     public void checkBookingTime(CreatedBookingDto createdBookingDto) {
-        if (createdBookingDto.getEnd().isBefore(createdBookingDto.getStart())) {
-            log.error("Время окончания брони не может быть раньше начала бронирования");
+        if (createdBookingDto.getEnd().isBefore(createdBookingDto.getStart()) ||
+                createdBookingDto.getEnd().equals(createdBookingDto.getStart())) {
+            log.error("Время окончания брони не может быть раньше или равно началу бронирования");
             throw new IncorrectBookingException("дата старта брони должна быть раньше, чем дата окончания");
         }
     }
