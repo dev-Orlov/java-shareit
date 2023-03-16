@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exception.userExeption.ConflictUserException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.validator.Validator;
+import ru.practicum.shareit.util.Validator;
 
 import java.util.ArrayList;
 import java.util.HashMap;

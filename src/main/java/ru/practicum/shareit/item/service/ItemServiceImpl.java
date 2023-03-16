@@ -2,6 +2,10 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
@@ -21,11 +25,11 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.validator.Validator;
+import ru.practicum.shareit.util.Pagination;
+import ru.practicum.shareit.util.Validator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -114,9 +118,19 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemWithBookingInfoDto> getItemsByOwner(Long ownerId) {
-        return itemRepository.findByOwnerId(ownerId).stream()
-                .map(item -> {
+    public List<ItemWithBookingInfoDto> getItemsByOwner(Long ownerId, Integer from, Integer size) {
+        List<ItemWithBookingInfoDto> listItemExtDto = new ArrayList<>();
+        Pageable pageable;
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Page<Item> page;
+        Pagination pager = new Pagination(from, size);
+
+        if (size == null) {
+            pageable =
+                    PageRequest.of(pager.getIndex(), pager.getPageSize(), sort);
+            do {
+                page = itemRepository.findByOwnerId(ownerId, pageable);
+                listItemExtDto.addAll(page.stream().map(item -> {
                             Booking lastBooking = bookingRepository
                                     .getTopByItemIdAndStartBeforeOrderByStartDesc(item.getId(),
                                             LocalDateTime.now()).orElse(null);
@@ -138,22 +152,81 @@ public class ItemServiceImpl implements ItemService {
                             return itemMapperWithBookingInfo.toItemWithBookingInfoDto(item, lastBooking,
                                     nextBooking, comments);
                         }
-                )
-                .sorted(Comparator.comparing(ItemWithBookingInfoDto::getId))
-                .collect(toList());
+                ).collect(toList()));
+                pageable = pageable.next();
+            } while (page.hasNext());
+
+        } else {
+            for (int i = pager.getIndex(); i < pager.getTotalPages(); i++) {
+                pageable =
+                        PageRequest.of(i, pager.getPageSize(), sort);
+                page = itemRepository.findByOwnerId(ownerId, pageable);
+                listItemExtDto.addAll(page.stream().map(item -> {
+                            Booking lastBooking = bookingRepository
+                                    .getTopByItemIdAndStartBeforeOrderByStartDesc(item.getId(),
+                                            LocalDateTime.now()).orElse(null);
+                            if (lastBooking != null && !lastBooking.getStatus().equals(Status.APPROVED)) {
+                                lastBooking = null;
+                            }
+                            Booking nextBooking = bookingRepository
+                                    .getTopByItemIdAndStartAfterOrderByStartAsc(item.getId(),
+                                            LocalDateTime.now()).orElse(null);
+                            if (nextBooking != null && !nextBooking.getStatus().equals(Status.APPROVED)) {
+                                nextBooking = null;
+                            }
+                            List<CommentDto> comments = new ArrayList<>();
+                            for (Comment comment : getCommentsByItemId(item.getId())) {
+                                CommentDto commentDto = commentMapper.toCommentDto(comment);
+                                comments.add(commentDto);
+                            }
+
+                            return itemMapperWithBookingInfo.toItemWithBookingInfoDto(item, lastBooking,
+                                    nextBooking, comments);
+                        }
+                ).collect(toList()));
+                if (!page.hasNext()) {
+                    break;
+                }
+            }
+            listItemExtDto = listItemExtDto.stream().limit(size).collect(toList());
+        }
+        return listItemExtDto;
     }
 
     @Override
-    public List<ItemDto> searchItem(String text) {
-        String query = text.toLowerCase();
+    public List<ItemDto> searchItem(String text, Integer from, Integer size) {
 
-        if (query.trim().length() == 0) {
-            return new ArrayList<>();
-        } else {
-            return itemRepository.getItemsBySearchQuery(query).stream()
-                    .map(itemMapper::toItemDto)
-                    .collect(toList());
+        List<ItemDto> itemDtoList = new ArrayList<>();
+        if ((text != null) && (!text.isEmpty()) && (!text.isBlank())) {
+            text = text.toLowerCase();
+            Pageable pageable;
+            Sort sort = Sort.by(Sort.Direction.ASC, "name");
+            Page<Item> page;
+            Pagination pager = new Pagination(from, size);
+
+            if (size == null) {
+                pageable =
+                        PageRequest.of(pager.getIndex(), pager.getPageSize(), sort);
+                do {
+                    page = itemRepository.getItemsBySearchQuery(text, pageable);
+                    itemDtoList.addAll(page.stream().map(itemMapper::toItemDto).collect(toList()));
+                    pageable = pageable.next();
+                } while (page.hasNext());
+
+            } else {
+                for (int i = pager.getIndex(); i < pager.getTotalPages(); i++) {
+                    pageable =
+                            PageRequest.of(i, pager.getPageSize(), sort);
+                    page = itemRepository.getItemsBySearchQuery(text, pageable);
+                    itemDtoList.addAll(page.stream().map(itemMapper::toItemDto).collect(toList()));
+                    if (!page.hasNext()) {
+                        break;
+                    }
+                }
+                itemDtoList = itemDtoList.stream().limit(size).collect(toList());
+            }
         }
+        return itemDtoList;
     }
 
     @Override
@@ -178,5 +251,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Comment> getCommentsByItemId(Long itemId) {
         return commentRepository.getByItem_IdOrderByCreatedDesc(itemId);
+    }
+
+    @Override
+    public List<ItemDto> getItemsByRequest(Long requestId) {
+        return itemRepository.findAllByRequestId(requestId,
+                        Sort.by(Sort.Direction.DESC, "id")).stream().map(itemMapper::toItemDto)
+                .collect(toList());
     }
 }

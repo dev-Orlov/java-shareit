@@ -1,4 +1,4 @@
-package ru.practicum.shareit.validator;
+package ru.practicum.shareit.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
