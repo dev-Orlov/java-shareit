@@ -40,7 +40,7 @@ public class BookingControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    private final ItemDto itemDto = new ItemDto(1L, "вещь1", "Описание вещи 1", true,
+    private final ItemDto itemDto = new ItemDto(1L, "вещь1", "описание вещи 1", true,
             1L, null);
 
     private final UserDto userDto = new UserDto(1L, "пользователь1", "mail@mail.com");

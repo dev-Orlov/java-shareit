@@ -24,11 +24,9 @@ public class Booking {
     private Long id;
     @Column(name = "start_date")
     @NotNull
-    @FutureOrPresent
     private LocalDateTime start;
     @Column(name = "end_date")
     @NotNull
-    @Future
     private LocalDateTime end;
     @ManyToOne()
     @JoinColumn(name = "item_id", referencedColumnName = "id")

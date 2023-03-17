@@ -34,15 +34,6 @@ public class BookingServiceTest {
     private final UserService userService;
     private final UserDto userDto1 = new UserDto(1L, "пользователь1", "mail2@mail.com");
     private final UserDto userDto2 = new UserDto(2L, "пользователь2", "mail3@mail.com");
-    private final User user1 = new User(3L, "пользователь3", "mail@mail.com");
-    private final ItemDto itemDto1 = new ItemDto(1L, "вещь1", "описание 1", true,
-            1L, null);
-    private final ItemDto itemDto2 = new ItemDto(1L, "вещь2", "описание 2", true,
-            1L, null);
-    private final BookingDto bookingDto = new BookingDto(1L,
-            LocalDateTime.of(2023, 9, 1, 10, 30, 5, 1),
-            LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
-            Status.WAITING, userDto2, itemDto1);
 
     @Test
     @DisplayName("Тест создания бронирования")
