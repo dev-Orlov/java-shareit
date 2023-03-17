@@ -52,8 +52,8 @@ public class BookingServiceTest {
         ItemDto item = itemService.create((new ItemDto(null, "вещь1", "описание 1", true,
                 owner.getId(), null)), owner.getId());
 
-        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime.
-                of(2023, 9, 1, 10, 30, 5, 1),
+        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
                 LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
                 null, booker.getId(), item.getId());
 
@@ -83,8 +83,8 @@ public class BookingServiceTest {
         ItemDto item = itemService.create((new ItemDto(null, "вещь1", "описание 1", true,
                 owner.getId(), null)), owner.getId());
 
-        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime.
-                of(2023, 9, 1, 10, 30, 5, 1),
+        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
                 LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
                 null, booker.getId(), item.getId());
         BookingDto bookingDto1 = bookingService.create(createdBookingDto1, booker.getId());
@@ -114,8 +114,8 @@ public class BookingServiceTest {
         ItemDto item = itemService.create((new ItemDto(null, "вещь1", "описание 1", true,
                 owner.getId(), null)), owner.getId());
 
-        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime.
-                of(2023, 9, 1, 10, 30, 5, 1),
+        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
                 LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
                 null, booker.getId(), item.getId());
         BookingDto bookingDto1 = bookingService.create(createdBookingDto1, booker.getId());
@@ -148,12 +148,12 @@ public class BookingServiceTest {
         assertEquals(new ArrayList<>(), bookingService.getUserBookings("ALL",
                 owner.getId(), 0, 10));
 
-        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime.
-                of(2023, 9, 1, 10, 30, 5, 1),
+        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
                 LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
                 null, booker.getId(), item1.getId());
-        CreatedBookingDto createdBookingDto2 = new CreatedBookingDto(LocalDateTime.
-                of(2024, 9, 1, 10, 30, 5, 1),
+        CreatedBookingDto createdBookingDto2 = new CreatedBookingDto(LocalDateTime
+                .of(2024, 9, 1, 10, 30, 5, 1),
                 LocalDateTime.of(2024, 9, 7, 10, 30, 5, 1),
                 null, booker.getId(), item2.getId());
         BookingDto bookingDto1 = bookingService.create(createdBookingDto1, booker.getId());
@@ -181,12 +181,12 @@ public class BookingServiceTest {
         assertEquals(new ArrayList<>(), bookingService.getOwnerBookings("ALL",
                 owner.getId(), 0, 10));
 
-        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime.
-                of(2023, 9, 1, 10, 30, 5, 1),
+        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
                 LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
                 null, booker.getId(), item1.getId());
-        CreatedBookingDto createdBookingDto2 = new CreatedBookingDto(LocalDateTime.
-                of(2024, 9, 1, 10, 30, 5, 1),
+        CreatedBookingDto createdBookingDto2 = new CreatedBookingDto(LocalDateTime
+                .of(2024, 9, 1, 10, 30, 5, 1),
                 LocalDateTime.of(2024, 9, 7, 10, 30, 5, 1),
                 null, booker.getId(), item2.getId());
         BookingDto bookingDto1 = bookingService.create(createdBookingDto1, booker.getId());
@@ -199,5 +199,4 @@ public class BookingServiceTest {
         assertEquals(bookingDto1, bookingService.getOwnerBookings("ALL",
                 owner.getId(), 0, 10).get(1));
     }
-
 }

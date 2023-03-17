@@ -50,8 +50,8 @@ public class BookingControllerTest {
             LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
             Status.WAITING, userDto, itemDto);
 
-    private final CreatedBookingDto createdBookingDto = new CreatedBookingDto(LocalDateTime.
-            of(2023, 9, 1, 10, 30, 5, 1),
+    private final CreatedBookingDto createdBookingDto = new CreatedBookingDto(LocalDateTime
+            .of(2023, 9, 1, 10, 30, 5, 1),
             LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
             null, 1L, 1L);
 
