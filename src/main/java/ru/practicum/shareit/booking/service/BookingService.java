@@ -15,5 +15,4 @@ public interface BookingService {
     List<BookingDto> getUserBookings(String state, Long userId, Integer from, Integer size);
 
     List<BookingDto> getOwnerBookings(String state, Long userId, Integer from, Integer size);
-
 }

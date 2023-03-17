@@ -38,7 +38,7 @@ public class BookingMapper {
                 createdBookingDto.getStart(),
                 createdBookingDto.getEnd(),
                 itemMapper.toItemFromItemWithBookingInfo(itemService.getItem(createdBookingDto.getItemId(), null),
-                        createdBookingDto.getItemId()),
+                        itemService.getItem(createdBookingDto.getItemId(), null).getOwnerId()),
                 userMapper.toUser(userService.getUser(bookerId)),
                 Status.WAITING
         );
