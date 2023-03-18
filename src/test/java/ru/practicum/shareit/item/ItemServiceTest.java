@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.CreatedBookingDto;
+import ru.practicum.shareit.booking.dto.ShortBookingDto;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.itemExeption.UnknownItemException;
 import ru.practicum.shareit.exception.userExeption.UnknownUserException;
@@ -99,12 +101,36 @@ public class ItemServiceTest {
         assertEquals("попытка получить несуществующую вещь", exp1.getMessage());
 
         UserDto owner = userService.create(userDto1);
-        ItemDto item = itemService.create(itemDto1, owner.getId());
-        ItemWithBookingInfoDto checkItem = new ItemWithBookingInfoDto(item.getId(), item.getName(),
-                item.getDescription(), item.getAvailable(), item.getOwnerId(), null, null,
+        ItemDto item1 = itemService.create(itemDto1, owner.getId());
+        ItemDto item2 = itemService.create(itemDto2, owner.getId());
+        ItemWithBookingInfoDto checkItem1 = new ItemWithBookingInfoDto(item1.getId(), item1.getName(),
+                item1.getDescription(), item1.getAvailable(), item1.getOwnerId(), null, null,
                 null, new ArrayList<>());
 
-        assertEquals(checkItem, itemService.getItem(item.getId(), owner.getId()));
+        assertEquals(checkItem1, itemService.getItem(item1.getId(), owner.getId()));
+
+        UserDto booker = userService.create(userDto2);
+        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
+                LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
+                null, booker.getId(), item1.getId());
+        CreatedBookingDto createdBookingDto2 = new CreatedBookingDto(LocalDateTime
+                .of(2024, 9, 1, 10, 30, 5, 1),
+                LocalDateTime.of(2024, 9, 7, 10, 30, 5, 1),
+                null, booker.getId(), item2.getId());
+        BookingDto bookingDto1 = bookingService.create(createdBookingDto1, booker.getId());
+        BookingDto bookingDto2 = bookingService.create(createdBookingDto2, booker.getId());
+        bookingService.update(bookingDto1.getId(), owner.getId(), true);
+        bookingService.update(bookingDto2.getId(), owner.getId(), true);
+
+        ItemWithBookingInfoDto checkItem2 = new ItemWithBookingInfoDto(item1.getId(), item1.getName(),
+                item1.getDescription(), item1.getAvailable(), item1.getOwnerId(), null, null,
+                new ShortBookingDto(bookingDto1.getId(), LocalDateTime.of(2023, 9, 1, 10,
+                        30, 5, 1), LocalDateTime.of(2023, 9, 7,
+                        10, 30, 5, 1), booker.getId(), item1.getId(), Status.APPROVED),
+                new ArrayList<>());
+
+        assertEquals(checkItem2, itemService.getItem(item1.getId(), owner.getId()));
     }
 
     @Test
@@ -127,6 +153,29 @@ public class ItemServiceTest {
         assertEquals(checkItem1, itemService.getItemsByOwner(owner.getId(), 0, 10).get(0));
         assertEquals(checkItem2, itemService.getItemsByOwner(owner.getId(), 0, 10).get(1));
         assertEquals(2, itemService.getItemsByOwner(owner.getId(), 0, 10).size());
+
+        UserDto booker = userService.create(userDto2);
+        CreatedBookingDto createdBookingDto1 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
+                LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
+                null, booker.getId(), item1.getId());
+        CreatedBookingDto createdBookingDto2 = new CreatedBookingDto(LocalDateTime
+                .of(2024, 9, 1, 10, 30, 5, 1),
+                LocalDateTime.of(2024, 9, 7, 10, 30, 5, 1),
+                null, booker.getId(), item2.getId());
+        BookingDto bookingDto1 = bookingService.create(createdBookingDto1, booker.getId());
+        BookingDto bookingDto2 = bookingService.create(createdBookingDto2, booker.getId());
+        bookingService.update(bookingDto1.getId(), owner.getId(), true);
+        bookingService.update(bookingDto2.getId(), owner.getId(), true);
+
+        ItemWithBookingInfoDto checkItem3 = new ItemWithBookingInfoDto(item1.getId(), item1.getName(),
+                item1.getDescription(), item1.getAvailable(), item1.getOwnerId(), null, null,
+                new ShortBookingDto(bookingDto1.getId(), LocalDateTime.of(2023, 9, 1, 10,
+                        30, 5, 1), LocalDateTime.of(2023, 9, 7,
+                        10, 30, 5, 1), booker.getId(), item1.getId(), Status.APPROVED),
+                new ArrayList<>());
+
+        assertEquals(checkItem3, itemService.getItemsByOwner(owner.getId(), 0, null).get(0));
     }
 
     @Test
@@ -140,7 +189,7 @@ public class ItemServiceTest {
         ItemDto item2 = itemService.create(itemDto2, owner.getId());
 
         assertEquals(item1, itemService.searchItem("вещь", 0, 10).get(0));
-        assertEquals(item2, itemService.searchItem("вещь", 0, 10).get(1));
+        assertEquals(item2, itemService.searchItem("вещь", 0, null).get(1));
         assertEquals(2, itemService.searchItem("вещь", 0, 10).size());
     }
 
