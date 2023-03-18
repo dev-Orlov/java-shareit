@@ -12,6 +12,8 @@ import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.bookingExeption.IncorrectBookingException;
 import ru.practicum.shareit.exception.bookingExeption.UnknownBookingException;
+import ru.practicum.shareit.exception.itemExeption.UnavailableItemException;
+import ru.practicum.shareit.exception.itemExeption.UnknownItemException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -63,6 +65,27 @@ public class BookingServiceTest {
         IncorrectBookingException exp2 = assertThrows(IncorrectBookingException.class,
                 () -> bookingService.create(createdBookingDto1, booker.getId()));
         assertEquals("попытка повторно создать бронирование", exp2.getMessage());
+
+        CreatedBookingDto wrongBookingDto1 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
+                LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
+                null, booker.getId(), -1L);
+
+        UnknownItemException exp3 = assertThrows(UnknownItemException.class,
+                () -> bookingService.create(wrongBookingDto1, owner.getId()));
+        assertEquals("попытка получить несуществующую вещь", exp3.getMessage());
+
+        ItemDto wrongItem = itemService.create((new ItemDto(null, "вещь2", "описание 2",
+                false, owner.getId(), null)), owner.getId());
+
+        CreatedBookingDto wrongBookingDto2 = new CreatedBookingDto(LocalDateTime
+                .of(2023, 9, 1, 10, 30, 5, 1),
+                LocalDateTime.of(2023, 9, 7, 10, 30, 5, 1),
+                null, booker.getId(), wrongItem.getId());
+
+        UnavailableItemException exp4 = assertThrows(UnavailableItemException.class,
+                () -> bookingService.create(wrongBookingDto2, owner.getId()));
+        assertEquals("попытка забронировать недоступную вещь", exp4.getMessage());
     }
 
     @Test
@@ -151,10 +174,20 @@ public class BookingServiceTest {
 
         assertEquals(2, bookingService.getUserBookings("ALL",
                 booker.getId(), 0, 10).size());
-        assertEquals(bookingDto2, bookingService.getUserBookings("ALL",
+        assertEquals(bookingDto2, bookingService.getUserBookings("WAITING",
                 booker.getId(), 0, 10).get(0));
-        assertEquals(bookingDto1, bookingService.getUserBookings("ALL",
+        assertEquals(bookingDto1, bookingService.getUserBookings("FUTURE",
                 booker.getId(), 0, 10).get(1));
+        assertEquals(new ArrayList<>(), bookingService.getUserBookings("PAST",
+                booker.getId(), 0, 10));
+        assertEquals(new ArrayList<>(), bookingService.getUserBookings("REJECTED",
+                booker.getId(), 0, null));
+        assertEquals(new ArrayList<>(), bookingService.getUserBookings("CURRENT",
+                booker.getId(), 0, null));
+
+        IncorrectBookingException exp1 = assertThrows(IncorrectBookingException.class,
+                () -> bookingService.getUserBookings("INCORRECT", booker.getId(), 0, 10));
+        assertEquals("Unknown state: INCORRECT", exp1.getMessage());
     }
 
     @Test
@@ -184,9 +217,19 @@ public class BookingServiceTest {
 
         assertEquals(2, bookingService.getOwnerBookings("ALL",
                 owner.getId(), 0, 10).size());
-        assertEquals(bookingDto2, bookingService.getOwnerBookings("ALL",
+        assertEquals(bookingDto2, bookingService.getOwnerBookings("WAITING",
                 owner.getId(), 0, 10).get(0));
-        assertEquals(bookingDto1, bookingService.getOwnerBookings("ALL",
+        assertEquals(bookingDto1, bookingService.getOwnerBookings("FUTURE",
                 owner.getId(), 0, 10).get(1));
+        assertEquals(new ArrayList<>(), bookingService.getOwnerBookings("PAST",
+                booker.getId(), 0, 10));
+        assertEquals(new ArrayList<>(), bookingService.getOwnerBookings("REJECTED",
+                booker.getId(), 0, null));
+        assertEquals(new ArrayList<>(), bookingService.getOwnerBookings("CURRENT",
+                booker.getId(), 0, null));
+
+        IncorrectBookingException exp1 = assertThrows(IncorrectBookingException.class,
+                () -> bookingService.getOwnerBookings("INCORRECT", booker.getId(), 0, 10));
+        assertEquals("Unknown state: INCORRECT", exp1.getMessage());
     }
 }

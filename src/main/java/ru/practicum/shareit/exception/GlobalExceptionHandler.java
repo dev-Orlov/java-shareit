@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.practicum.shareit.exception.bookingExeption.ConflictBookingException;
 import ru.practicum.shareit.exception.bookingExeption.IncorrectBookingException;
 import ru.practicum.shareit.exception.bookingExeption.UnknownBookingException;
 import ru.practicum.shareit.exception.itemExeption.UnavailableItemException;
@@ -34,7 +33,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({ConflictUserException.class, ConflictBookingException.class})
+    @ExceptionHandler({ConflictUserException.class})
     public ResponseEntity<AppError> catchConflictException(RuntimeException e) {
         log.error(e.getMessage(), e);
         return new ResponseEntity<>(new AppError(HttpStatus.CONFLICT.value(),
