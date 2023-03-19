@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingInfoDto;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final ItemServiceImpl itemService;
+    private final ItemService itemService;
     private static final String USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
@@ -37,13 +37,17 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemWithBookingInfoDto>> getItemsByOwner(@RequestHeader(USER_ID) Long ownerId) {
-        return ResponseEntity.ok().body(itemService.getItemsByOwner(ownerId));
+    public ResponseEntity<List<ItemWithBookingInfoDto>> getItemsByOwner(@RequestHeader(USER_ID) Long ownerId,
+                                                                        @RequestParam(defaultValue = "0") Integer from,
+                                                                        @RequestParam(required = false) Integer size) {
+        return ResponseEntity.ok().body(itemService.getItemsByOwner(ownerId, from, size));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ItemDto>> searchItem(@RequestParam String text) {
-        return ResponseEntity.ok().body(itemService.searchItem(text));
+    public ResponseEntity<List<ItemDto>> searchItem(@RequestParam String text,
+                                                    @RequestParam(defaultValue = "0") Integer from,
+                                                    @RequestParam(required = false) Integer size) {
+        return ResponseEntity.ok().body(itemService.searchItem(text, from, size));
     }
 
     @PostMapping("/{itemId}/comment")
