@@ -13,6 +13,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<ErrorObject> catchResourceBadRequestException(IllegalArgumentException e) {
         log.error(e.getMessage(), e);
-        return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorObject(e.getMessage()), HttpStatus.BAD_REQUEST); //код 400
     }
 }
