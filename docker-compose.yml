@@ -19,7 +19,7 @@ services:
       - db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
-#     - TZ=Europe/Moscow изменение часового пояса для локальных тестов
+#      - TZ=Europe/Moscow настройка часового пояса для прохождения локальных тестов
 
   db:
     image: postgres:13.7-alpine
@@ -27,7 +27,7 @@ services:
     ports:
       - "6541:5432"
     volumes:
-      - ./postgres_db:/var/lib/postgresql/data
+      - /var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=invoz
