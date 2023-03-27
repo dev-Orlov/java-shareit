@@ -6,7 +6,6 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
       - server
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
@@ -20,12 +19,15 @@ services:
       - db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
+#     - TZ=Europe/Moscow изменение часового пояса для локальных тестов
 
   db:
     image: postgres:13.7-alpine
     container_name: db
     ports:
       - "6541:5432"
+    volumes:
+      - ./postgres_db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=invoz
